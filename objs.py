@@ -70,6 +70,20 @@ class Obj:
                 glVertex3fv(self.verts()[vertex])
         glEnd()
 
+class Plane:
+    def __init__(self, corner, width, height):
+        self.corner = corner
+        self.size = (width, height)
+    
+    def render(self):
+        glColor4f(0.5, 0.5, 0.5, 1)
+        glBegin(GL_QUADS)
+        glVertex3f(*self.corner)
+        glVertex3f(self.corner[0]+self.size[0], self.corner[1], self.corner[2])
+        glVertex3f(self.corner[0]+self.size[0], self.corner[1]+self.size[1], self.corner[2])
+        glVertex3f(self.corner[0], self.corner[1]+self.size[0], self.corner[2])
+        glEnd()
+
 class Cube(Obj):
     @property
     def tex_coords(self):

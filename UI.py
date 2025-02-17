@@ -1,7 +1,7 @@
 import pygame
 from OpenGL.GL import *  # noqa: F403
 from OpenGL.GLU import gluPerspective, gluLookAt
-from world import DefaultStage as DEFAULTSTAGE
+from stage import DefaultStage as DEFAULTSTAGE
 
 # Initialize Pygame and OpenGL
 pygame.init()
@@ -87,19 +87,11 @@ while run:
         glPushMatrix()
         glEnable(GL_TEXTURE_2D)
         
-        # Render cubes
+        # Render objects
         for o in objs:
             o.render()
         
         glDisable(GL_TEXTURE_2D)
-
-        glColor4f(0.5, 0.5, 0.5, 1)
-        glBegin(GL_QUADS)
-        glVertex3f(-10, -10, -2)
-        glVertex3f(10, -10, -2)
-        glVertex3f(10, 10, -2)
-        glVertex3f(-10, 10, -2)
-        glEnd()
 
         glPopMatrix()
         
