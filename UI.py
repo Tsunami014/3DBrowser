@@ -1,7 +1,7 @@
 import pygame
 from OpenGL.GL import *  # noqa: F403
 from OpenGL.GLU import gluPerspective, gluLookAt
-from objs import Cube, Flat
+from world import DefaultStage as DEFAULTSTAGE
 
 # Initialize Pygame and OpenGL
 pygame.init()
@@ -30,11 +30,8 @@ displayCenter = [screen.get_size()[i] // 2 for i in range(2)]
 pygame.mouse.set_pos(displayCenter)
 pygame.mouse.set_visible(False)
 
-objs = [
-    Cube(x, y, z) for x, y, z in [(0, 0, 0), (2, 0, 0), (0, 2, 0), (0, 0, 2), (-4, 0, 0)]
-] + [
-    Flat(-2, 0, -1)
-]
+stage = DEFAULTSTAGE()
+objs = stage.getObjs()
 
 up_down_angle = 0.0
 paused = False
