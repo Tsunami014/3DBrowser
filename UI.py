@@ -5,8 +5,6 @@ from OpenGL.GL import *  # noqa: F403
 from OpenGL.GLU import gluPerspective, gluLookAt
 import numpy as np
 
-import AR
-
 def tex_coord(x, y, n=4):
     """Calculate texture coordinates for a given (x, y) position in an n x n texture atlas."""
     m = 1.0 / n
@@ -16,7 +14,7 @@ def tex_coord(x, y, n=4):
 @lru_cache
 def loadTexture(name, nearest=False):
     """Load and configure a texture from an image file."""
-    textureSurface = pygame.transform.flip(pygame.image.load(f'testImgs/{name}.png'), True, False)
+    textureSurface = pygame.transform.flip(pygame.image.load(f'textures/{name}.png'), True, False)
     textureData = pygame.image.tostring(textureSurface, "RGBA", 1)
     width, height = textureSurface.get_size()
 
@@ -37,7 +35,7 @@ def loadTexture(name, nearest=False):
     return texid
 
 class Cube:
-    def __init__(self, x, y, z, texture='mars'):
+    def __init__(self, x, y, z, texture='noise'):
         self.x, self.y, self.z = x, y, z
         self.textureId = loadTexture(texture)
 
@@ -66,7 +64,7 @@ class Cube:
     What idx of vertex (in the verts func) goes for each solid surface (face)"""
 
     def render(self):
-        glBindTexture(GL_TEXTURE_2D, self.textureId)
+        # glBindTexture(GL_TEXTURE_2D, self.textureId)
         glBegin(GL_QUADS)
         block = self.tex_coords
         for i, surface in enumerate(self.surfaces):
@@ -121,9 +119,9 @@ pygame.mouse.set_pos(displayCenter)
 pygame.mouse.set_visible(False)
 
 objs = [
-    # Cube(x, y, z) for x, y, z in [(0, 0, 0), (2, 0, 0), (0, 2, 0), (0, 0, 2), (-4, 0, 0)]
+    Cube(x, y, z) for x, y, z in [(0, 0, 0), (2, 0, 0), (0, 2, 0), (0, 0, 2), (-4, 0, 0)]
 ] + [
-    Flat(-2, 0, -1, 'model2')
+    Flat(-2, 0, -1)
 ]
 
 up_down_angle = 0.0
@@ -195,24 +193,6 @@ while run:
         glEnd()
 
         glPopMatrix()
-        
-        width, height = display
-        glPixelStorei(GL_PACK_ALIGNMENT, 1)
-        buffer = glReadPixels(0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE)
-        arr = np.frombuffer(buffer, dtype=np.uint8).reshape(height, width, 3)
-        arr = np.flipud(arr)  # flip vertically
-        if keypress[pygame.K_RETURN]:
-            pygame.mouse.set_visible(True)
-            sur = AR.match(arr, window=True)
-            pygame.mouse.set_visible(paused)
-        else:
-            sur = AR.match(arr, useMatches=False)
-        try:
-            textData = pygame.image.tostring(sur, "RGBA", True)
-            glWindowPos2d(0, 0)
-            glDrawPixels(sur.get_width(), sur.get_height(), GL_RGBA, GL_UNSIGNED_BYTE, textData)
-        except TypeError:
-            pass
         
         pygame.display.flip()
         pygame.time.wait(10)
